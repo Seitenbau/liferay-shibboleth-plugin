@@ -1,5 +1,15 @@
 package com.liferay.portal.security.auth;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.liferay.portal.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -18,21 +28,15 @@ import com.liferay.portal.shibboleth.util.ShibbolethPropsKeys;
 import com.liferay.portal.shibboleth.util.Util;
 import com.liferay.portal.util.PortalUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import java.util.*;
-
 /**
  * Performs autologin based on the header values passed by Shibboleth.
- * 
- * The Shibboleth user ID header set in the configuration must contain the user
- * ID, if users are authenticated by screen name or the user email, if the users
- * are authenticated by email (Portal settings --> Authentication --> General).
- * 
+ *
+ * The Shibboleth user ID header set in the configuration must contain the user ID.
+ * (Portal settings --> Authentication --> General).
+ *
  * @author Romeo Sheshi
  * @author Ivan Novakov <ivan.novakov@debug.cz>
+ * @author Michael Trunner <michael.trunner@seitenbau.com>
  */
 public class ShibbolethAutoLogin implements AutoLogin {
 
@@ -148,11 +152,8 @@ public class ShibbolethAutoLogin implements AutoLogin {
             return user;
         }
 
-        String emailAddress = convertAttribute(companyId, (String) session.getAttribute(ShibbolethPropsKeys.SHIBBOLETH_HEADER_EMAIL));
-        if (Validator.isNull(emailAddress)) {
-            _log.error("Cannot create user - missing email");
-            return user;
-        }
+        // SHIBBOLETH email address is not unique. Liferay will generate one if no email address is given.
+        String emailAddress = StringPool.BLANK;
 
         String firstname = convertAttribute(companyId, (String) session.getAttribute(ShibbolethPropsKeys.SHIBBOLETH_HEADER_FIRSTNAME));
         if (Validator.isNull(firstname)) {
@@ -169,7 +170,7 @@ public class ShibbolethAutoLogin implements AutoLogin {
         _log.info("Creating user: screen name = [" + screenName + "], emailAddress = [" + emailAddress
                 + "], first name = [" + firstname + "], surname = [" + surname + "]");
 
-        
+
         return addUser(companyId, screenName, emailAddress, firstname, surname);
     }
 
@@ -208,31 +209,23 @@ public class ShibbolethAutoLogin implements AutoLogin {
                 autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName,
                 prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds,
                 organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
-        
+
         user.setPasswordReset(false);
         if (Util.isUserPasswordReset(companyId))
     	{
           user.setPasswordReset(true);
     	}
-        
+
 //        user.setAgreedToTermsOfUse(true);
 //        user.setReminderQueryAnswer("default");
 //        user.setReminderQueryAnswer("default");
         UserLocalServiceUtil.updateUser(user);
-        
+
         return user;
     }
 
     protected void updateUserFromSession(long companyId, User user, HttpSession session) throws Exception {
         boolean modified = false;
-
-        String emailAddress = convertAttribute(companyId, (String) session.getAttribute(ShibbolethPropsKeys.SHIBBOLETH_HEADER_EMAIL));
-        if (Validator.isNotNull(emailAddress) && !user.getEmailAddress().equals(emailAddress)) {
-            _log.info("User [" + user.getScreenName() + "]: update email address [" + user.getEmailAddress()
-                    + "] --> [" + emailAddress + "]");
-            user.setEmailAddress(emailAddress);
-            modified = true;
-        }
 
         String firstname = convertAttribute(companyId, (String) session.getAttribute(ShibbolethPropsKeys.SHIBBOLETH_HEADER_FIRSTNAME));
         if (Validator.isNotNull(firstname) && !user.getFirstName().equals(firstname)) {
@@ -249,21 +242,21 @@ public class ShibbolethAutoLogin implements AutoLogin {
             user.setLastName(surname);
             modified = true;
         }
-        
+
         if (modified) {
             UserLocalServiceUtil.updateUser(user);
         }
     }
-    
+
 	/**
 	 * Shibboleth attributes are by default UTF-8 encoded. However, depending on
 	 * the servlet contaner configuration they are interpreted as ISO-8859-1
 	 * values. This causes problems with non-ASCII characters. The solution is
 	 * to re-encode attributes, e.g. with:
-	 * 
+	 *
 	 * @see https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPAttributeAccess
 	 *      #NativeSPAttributeAccess-Tool-SpecificExamples
-	 *      
+	 *
 	 * @param attribute
 	 *            shibboleth attribute
 	 * @return return utf-8 converted attribute, if enabled
@@ -349,10 +342,14 @@ public class ShibbolethAutoLogin implements AutoLogin {
         				role.setName(roleName);
         				role.setType(1);
         				RoleLocalServiceUtil.addRole(role);
-                    }else continue;
+                    }
+                    else
+                    {
+                      continue;
+                    }
                 }catch (Exception exc){
                     continue;
-                }        
+                }
             }
 
             currentFelRoles.add(role);
