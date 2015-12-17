@@ -8,7 +8,7 @@ Shibboleth Authentication Plugin for Liferay
 
 Additional features has been added:
 
-* auto create users using Shibboleth attributes (email, first name, last name)
+* auto create users using Shibboleth attributes (first name, last name)
 * auto update user information upon login
 * added options to specify the headers (Shibboleth attributes) to be used for extracting email, first name and last name
 * basic attribute to role mapping
