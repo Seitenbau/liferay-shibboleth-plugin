@@ -171,9 +171,29 @@ public class ShibbolethAutoLogin implements AutoLogin {
                 + "], first name = [" + firstname + "], surname = [" + surname + "]");
 
 
-        return addUser(companyId, screenName, emailAddress, firstname, surname);
+        return addUser(
+            companyId, cutString(screenName), cutString(emailAddress),
+            cutString(firstname), cutString(surname));
     }
 
+    private String cutString(String field)
+    {
+      return cutString(field, 75);
+    }
+    
+    private String cutString(String field, int maxlength)
+    {
+      if (field == null)
+      {
+        return null;
+      }
+      if (field.length() <= maxlength)
+      {
+        return field;
+      }
+      return field.substring(0, maxlength);
+    }
+    
     /**
      * Store user
      */
