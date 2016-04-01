@@ -247,7 +247,7 @@ public class ShibbolethAutoLogin implements AutoLogin {
     protected void updateUserFromSession(long companyId, User user, HttpSession session) throws Exception {
         boolean modified = false;
 
-        String firstname = convertAttribute(companyId, (String) session.getAttribute(ShibbolethPropsKeys.SHIBBOLETH_HEADER_FIRSTNAME));
+        String firstname = cutString(convertAttribute(companyId, (String) session.getAttribute(ShibbolethPropsKeys.SHIBBOLETH_HEADER_FIRSTNAME)));
         if (Validator.isNotNull(firstname) && !user.getFirstName().equals(firstname)) {
             _log.info("User [" + user.getScreenName() + "]: update first name [" + user.getFirstName() + "] --> ["
                     + firstname + "]");
@@ -255,7 +255,7 @@ public class ShibbolethAutoLogin implements AutoLogin {
             modified = true;
         }
 
-        String surname = convertAttribute(companyId, (String) session.getAttribute(ShibbolethPropsKeys.SHIBBOLETH_HEADER_SURNAME));
+        String surname = cutString(convertAttribute(companyId, (String) session.getAttribute(ShibbolethPropsKeys.SHIBBOLETH_HEADER_SURNAME)));
         if (Validator.isNotNull(surname) && !user.getLastName().equals(surname)) {
             _log.info("User [" + user.getScreenName() + "]: update last name [" + user.getLastName() + "] --> ["
                     + surname + "]");
