@@ -332,7 +332,7 @@ public class ShibbolethAutoLogin implements AutoLogin {
             return currentFelRoles;
         }
 
-        String[] affiliationList = affiliation.split(";");
+        String[] affiliationList = affiliation.split(",");
         for (String roleName : affiliationList) {
             Role role;
             try {
