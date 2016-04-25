@@ -361,6 +361,11 @@ public class ShibbolethAutoLogin implements AutoLogin {
         				role.setTitleMap(null);
         				role.setName(roleName);
         				role.setType(1);
+                final String subtype = Util.autoAssignUserRoleSubtype(companyId);
+                if (subtype != null & subtype.length() != 0)
+                {
+                  role.setSubtype(subtype);
+                }
         				RoleLocalServiceUtil.addRole(role);
                     }
                     else
