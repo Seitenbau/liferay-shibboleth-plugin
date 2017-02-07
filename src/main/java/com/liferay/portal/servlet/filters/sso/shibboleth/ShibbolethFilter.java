@@ -1,5 +1,12 @@
 package com.liferay.portal.servlet.filters.sso.shibboleth;
 
+import java.net.URI;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.BaseFilter;
@@ -7,11 +14,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.shibboleth.util.ShibbolethPropsKeys;
 import com.liferay.portal.shibboleth.util.Util;
 import com.liferay.portal.util.PortalUtil;
-
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Romeo Sheshi
@@ -46,18 +48,47 @@ public class ShibbolethFilter extends BaseFilter {
         String pathInfo = request.getPathInfo();
         HttpSession session = request.getSession();
         long companyId = PortalUtil.getCompanyId(request);
-
+        
         if (pathInfo.contains("/portal/logout")) {
             if (Util.isLogoutEnabled(companyId)) {
+                
+                _log.info("Logging out.");
+              
                 session.invalidate();
-                String logoutUrl = Util.getLogoutUrl(companyId);
-                response.sendRedirect(logoutUrl);
+                
+                String referer = request.getHeader("referer");
+                if(Util.getLogoutRefererRedirectEnabled(companyId) && 
+                    referer != null &&
+                    !referer.isEmpty()) {
+                  
+                  String refererUrl = createRefererUrl(companyId, referer);
+                  _log.debug("Redirecting to referer url: " + refererUrl);
+                  response.sendRedirect(refererUrl);
+                } else {
+                  String logoutUrl = Util.getLogoutUrl(companyId);
+                  _log.debug("Redirecting to static url: " + logoutUrl);
+                  response.sendRedirect(logoutUrl);
+                }
+
                 return;
             }
         } else {
             extractData(session, companyId, request);
         }
         processFilter(ShibbolethFilter.class, request, response, filterChain);
+    }
+    
+    private String createRefererUrl(long companyId, String referer) throws Exception {
+      String redirectPath = Util.getLogoutRefererRedirectPath(companyId);
+      
+      URI uri = new URI(referer);
+      String domain = uri.getScheme() + "://" + uri.getAuthority();
+      
+      if(!redirectPath.startsWith("/")) {
+        redirectPath = "/" + redirectPath;
+      }
+            
+      return domain + redirectPath + domain;
     }
 
     /**

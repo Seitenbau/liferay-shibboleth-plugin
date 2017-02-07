@@ -31,6 +31,10 @@ public class ShibbolethPropsValues {
     public static final String SHIBBOLETH_USER_ROLE_AUTO_ASSIGN_SUBTYPE = PropsUtil.get(ShibbolethPropsKeys.SHIBBOLETH_USER_ROLE_AUTO_ASSIGN_SUBTYPE);
 
     public static final boolean SHIBBOLETH_LOGOUT_ENABLE = GetterUtil.getBoolean(PropsUtil.get(ShibbolethPropsKeys.SHIBBOLETH_LOGOUT_ENABLE));
+    
+    public static final boolean SHIBBOLETH_LOGOUT_REFERER_REDIRECT_ENABLE = GetterUtil.getBoolean(PropsUtil.get(ShibbolethPropsKeys.SHIBBOLETH_LOGOUT_REFERER_REDIRECT_ENABLE));
+    
+    public static final String SHIBBOLETH_LOGOUT_REFERER_REDIRECT_PATH = GetterUtil.getString(PropsUtil.get(ShibbolethPropsKeys.SHIBBOLETH_LOGOUT_REFERER_REDIRECT_PATH));
 
     public static final boolean SHIBBOLETH_HEADERS_ENABLE = GetterUtil.getBoolean(PropsUtil.get(ShibbolethPropsKeys.SHIBBOLETH_HEADERS_ENABLE));
 

@@ -5,6 +5,7 @@
     final String SHIBBOLETH_USER_LDAP_IMPORT = "shibboleth.user.ldap.import";
     final String SHIBBOLETH_LOGOUT_ENABLE = "shibboleth.logout.enabled";
     final String SHIBBOLETH_LOGOUT_URL = "shibboleth.logout.url";
+    final String SHIBBOLETH_LOGOUT_REFERER_REDIRECT_ENABLE = "shibboleth.logout.referer.redirect.enabled";
     final String SHIBBOLETH_HEADERS_ENABLE = "shibboleth.headers.enabled";
     final String SHIBBOLETH_AFFILIATION_TRUNCATE_ENABLE = "shibboleth.affiliation.truncate.enabled";
     final String SHIBBOLETH_SCREENNAME_TRANSFORM_ENABLE = "shibboleth.screenname.transform.enabled";
@@ -28,6 +29,7 @@
     String shibbolethUserLdapImport = PrefsPropsUtil.getString(company.getCompanyId(), SHIBBOLETH_USER_LDAP_IMPORT, "false");
     String shibbolethLogoutEnabled = PrefsPropsUtil.getString(company.getCompanyId(), SHIBBOLETH_LOGOUT_ENABLE, "false");
     String shibbolethLogoutUrl = PrefsPropsUtil.getString(company.getCompanyId(), SHIBBOLETH_LOGOUT_URL, "");
+    String shibbolethLogoutRefererRedirectEnabled = PrefsPropsUtil.getString(company.getCompanyId(), SHIBBOLETH_LOGOUT_REFERER_REDIRECT_ENABLE, "false");
     String shibbolethHeadersEnabled = PrefsPropsUtil.getString(company.getCompanyId(), SHIBBOLETH_HEADERS_ENABLE, "false");
     String shibbolethAffiliationTruncateEnabled = PrefsPropsUtil.getString(company.getCompanyId(), SHIBBOLETH_AFFILIATION_TRUNCATE_ENABLE, "false");
     String shibbolethScreenNameTransformEnabled = PrefsPropsUtil.getString(company.getCompanyId(), SHIBBOLETH_SCREENNAME_TRANSFORM_ENABLE, "false");
@@ -84,9 +86,14 @@
                    value="<%= shibbolethUserRoleAutoAssignSubtype %>"/>             
         <aui:input label="shibboleth-logout-enable" name='<%= "settings--" + SHIBBOLETH_LOGOUT_ENABLE + "--" %>'
                    type="checkbox" value="<%= shibbolethLogoutEnabled %>"/>
+                   
+        <aui:input label="shibboleth-logout-referer-redirect-enable" name='<%= "settings--" + SHIBBOLETH_LOGOUT_REFERER_REDIRECT_ENABLE + "--" %>'
+                   type="checkbox" value="<%= shibbolethLogoutRefererRedirectEnabled %>"/>
+                   
         <aui:input cssClass="lfr-input-text-container" label="logout-url"
                    name='<%= "settings--" + SHIBBOLETH_LOGOUT_URL + "--" %>' type="text"
-                   value="<%= shibbolethLogoutUrl %>"/>
+                   value="<%= shibbolethLogoutUrl %>" />
+                   
         <aui:input cssClass="lfr-input-text-container" label="shibboleth-user-header-affiliation-prefix"
                    name='<%= "settings--" + SHIBBOLETH_HEADER_AFFILIATION_PREFIX + "--" %>' type="text"
                    value="<%= shibbolethHeaderAffiliationPrefix %>"/>   

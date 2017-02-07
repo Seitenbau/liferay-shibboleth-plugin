@@ -45,6 +45,16 @@ public final class Util {
 				ShibbolethPropsValues.SHIBBOLETH_USER_LDAP_IMPORT);
 	}
 
+	public static boolean getLogoutRefererRedirectEnabled(long companyId) throws Exception {
+    return GetterUtil.getBoolean(getValue(companyId, ShibbolethPropsKeys.SHIBBOLETH_LOGOUT_REFERER_REDIRECT_ENABLE),
+        ShibbolethPropsValues.SHIBBOLETH_LOGOUT_REFERER_REDIRECT_ENABLE);
+  }
+	
+	public static String getLogoutRefererRedirectPath(long companyId) throws Exception {
+    return GetterUtil.getString(getValue(companyId, ShibbolethPropsKeys.SHIBBOLETH_LOGOUT_REFERER_REDIRECT_PATH),
+        ShibbolethPropsValues.SHIBBOLETH_LOGOUT_REFERER_REDIRECT_PATH);
+  }
+	
 	public static String getLogoutUrl(long companyId) throws Exception {
 		return GetterUtil.getString(getValue(companyId, ShibbolethPropsKeys.SHIBBOLETH_LOGOUT_URL),
 				ShibbolethPropsValues.SHIBBOLETH_LOGOUT_URL);

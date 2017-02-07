@@ -31,6 +31,10 @@ public class ShibbolethPropsKeys {
 	public static final String SHIBBOLETH_USER_LDAP_IMPORT = "shibboleth.user.ldap.import";
 
 	public static final String SHIBBOLETH_LOGOUT_ENABLE = "shibboleth.logout.enabled";
+	
+	public static final String SHIBBOLETH_LOGOUT_REFERER_REDIRECT_ENABLE = "shibboleth.logout.referer.redirect.enabled";
+
+	public static final String SHIBBOLETH_LOGOUT_REFERER_REDIRECT_PATH = "shibboleth.logout.referer.redirect.path";
 
 	public static final String SHIBBOLETH_LOGOUT_URL = "shibboleth.logout.url";
 
