@@ -88,7 +88,7 @@ public class ShibbolethFilter extends BaseFilter {
         redirectPath = "/" + redirectPath;
       }
             
-      return domain + redirectPath + domain;
+      return domain + redirectPath + domain + "/";
     }
 
     /**
